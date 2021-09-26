@@ -42,7 +42,7 @@ if(PROJECT_IS_MSVC_CLANG AND NOT CMAKE_CXX_COMPILER_ID MATCHES GNU)
 endif()
 
 set(Source
-	# Файлы движка
+	src/Log.cpp
 )
 
 add_executable(tests

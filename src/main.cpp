@@ -1,22 +1,35 @@
+#include "Log.h"
 #include <windows.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
+Log *logger = nullptr;
+
+void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
+void errorCallback(int error, const char* description);
 
 int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPSTR str, int nWinMode)
 {
+    logger = new Log();
+    logger->Info("Initialization started");
+
+    glfwSetErrorCallback(errorCallback);
+
     if (!glfwInit())
+    {
+        logger->Error("Error, GLFW initialization failed");
         return -1;
+    }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     GLFWwindow *glfwWindow = glfwCreateWindow(1024, 768, "Emerald Engine", nullptr, nullptr);
     if (glfwWindow == nullptr)
     {
+        logger->Error("Error, window creation failed");
         glfwTerminate();
 
         return -2;
@@ -25,23 +38,27 @@ int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPSTR str, int nWin
     glfwMakeContextCurrent(glfwWindow);
 
     glfwSetWindowSizeLimits(glfwWindow, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE);
-    glfwSetKeyCallback(glfwWindow, key_callback);
+    glfwSetKeyCallback(glfwWindow, keyCallback);
     glfwSwapInterval(0);
 
     glewExperimental = GL_TRUE;
     if (GLenum err = glewInit(); err != GLEW_OK)
     {
+        logger->Error("Error, GLEW initialization failed. %s", glewGetErrorString(err));
         glfwTerminate();
 
         return -3;
     }
 
-    if (!GLEW_VERSION_4_4)
+    if (!GLEW_VERSION_4_5)
     {
+        logger->Error("Error, OpenGL 4.5 not supported");
         glfwTerminate();
 
         return -4;
     }
+
+    logger->Info("Initialization finished");
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
@@ -67,8 +84,13 @@ int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPSTR str, int nWin
     return 0;
 }
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+}
+
+void errorCallback(int error, const char* description)
+{
+    logger->Error("GLFW caused error: %s", description);
 }
