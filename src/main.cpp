@@ -2,11 +2,12 @@
 #include <windows.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "Engine/Engine.h"
 
 Log *logger = nullptr;
 
 void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
-void errorCallback(int error, const char* description);
+void errorCallback(int error, const char *description);
 
 int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPSTR str, int nWinMode)
 {
@@ -18,6 +19,8 @@ int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPSTR str, int nWin
     if (!glfwInit())
     {
         logger->Error("Error, GLFW initialization failed");
+        delete logger;
+
         return -1;
     }
 
@@ -31,6 +34,7 @@ int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPSTR str, int nWin
     {
         logger->Error("Error, window creation failed");
         glfwTerminate();
+        delete logger;
 
         return -2;
     }
@@ -46,6 +50,7 @@ int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPSTR str, int nWin
     {
         logger->Error("Error, GLEW initialization failed. %s", glewGetErrorString(err));
         glfwTerminate();
+        delete logger;
 
         return -3;
     }
@@ -54,6 +59,7 @@ int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPSTR str, int nWin
     {
         logger->Error("Error, OpenGL 4.5 not supported");
         glfwTerminate();
+        delete logger;
 
         return -4;
     }
@@ -79,7 +85,9 @@ int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPSTR str, int nWin
         glfwSwapBuffers(glfwWindow);
     }
 
+    Engine::Destroy();
     glfwTerminate();
+    delete logger;
 
     return 0;
 }
@@ -90,7 +98,7 @@ void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods
         glfwSetWindowShouldClose(window, true);
 }
 
-void errorCallback(int error, const char* description)
+void errorCallback(int error, const char *description)
 {
     logger->Error("GLFW caused error: %s", description);
 }

@@ -43,6 +43,7 @@ endif()
 
 set(Source
 	src/Log.cpp
+	src/Engine/Engine.cpp
 )
 
 add_executable(tests
