@@ -25,6 +25,7 @@ public:
     static void Destroy()
     {
         delete instance;
+        instance = nullptr;
     }
 };
 
