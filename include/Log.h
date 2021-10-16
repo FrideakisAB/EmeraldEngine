@@ -131,4 +131,6 @@ public:
     }
 };
 
+extern Log *logger;
+
 #endif

@@ -44,6 +44,15 @@ endif()
 set(Source
 	src/Log.cpp
 	src/Engine/Engine.cpp
+
+	src/Memory/MemoryManager.cpp
+	src/Memory/GlobalMemoryUser.cpp
+
+	src/Memory/Allocator/IAllocator.cpp
+	src/Memory/Allocator/PoolAllocator.cpp
+	src/Memory/Allocator/StackAllocator.cpp
+	src/Memory/Allocator/LinearAllocator.cpp
+	src/Memory/Allocator/ListLinearAllocator.cpp
 )
 
 add_executable(tests

@@ -3,8 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "Engine/Engine.h"
-
-Log *logger = nullptr;
+#include "Memory/MemoryManager.h"
 
 void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 void errorCallback(int error, const char *description);
@@ -86,6 +85,8 @@ int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPSTR str, int nWin
     }
 
     Engine::Destroy();
+    Memory::MemoryManager::Get().CheckMemoryLeaks();
+    Memory::MemoryManager::Destroy();
     glfwTerminate();
     delete logger;
 

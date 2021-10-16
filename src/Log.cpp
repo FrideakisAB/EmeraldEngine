@@ -3,6 +3,8 @@
 #include <ctime>
 #include <sstream>
 
+Log *logger = nullptr;
+
 Log::Log()
 {
     logFile.open("LatestLog.txt", std::ios::trunc);
