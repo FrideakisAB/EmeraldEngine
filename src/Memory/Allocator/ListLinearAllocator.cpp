@@ -54,7 +54,7 @@ namespace Memory::Allocator {
 
     void ListLinearAllocator::Free(void *memory)
     {
-        assert(false && "Linear allocators do not support free operations. Use clear instead.");
+        assert(true && "Linear allocators do not support free operations. Use clear instead.");
     }
 
     void ListLinearAllocator::Clear()

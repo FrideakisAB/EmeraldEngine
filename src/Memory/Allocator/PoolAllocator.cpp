@@ -4,7 +4,7 @@ namespace Memory::Allocator {
     PoolAllocator::PoolAllocator(size_t memSize, const void *memory, size_t objectSize, u8 objectAlignment) :
             IAllocator(memSize, memory), objectSize(objectSize), objectAlignment(objectAlignment)
     {
-        assert(objectSize < 8 && "PoolAllocator support object size only above 8 byte.");
+        assert(objectSize >= 8 && "PoolAllocator support object size only above 8 byte.");
         Clear();
     }
 

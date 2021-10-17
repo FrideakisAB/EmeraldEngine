@@ -1,6 +1,6 @@
 # EmeraldEngine
 
-[![CodeFactor](https://www.codefactor.io/repository/github/frideakisab/emeraldengine/badge)](https://www.codefactor.io/repository/github/frideakisab/emeraldengine) [![C/C++ CI](https://github.com/FrideakisAB/EmeraldEngine/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/FrideakisAB/EmeraldEngine/actions/workflows/c-cpp.yml)
+[![CodeFactor](https://www.codefactor.io/repository/github/frideakisab/emeraldengine/badge)](https://www.codefactor.io/repository/github/frideakisab/emeraldengine) [![C/C++ CI](https://github.com/FrideakisAB/EmeraldEngine/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/FrideakisAB/EmeraldEngine/actions/workflows/c-cpp.yml) [![codecov](https://codecov.io/gh/FrideakisAB/EmeraldEngine/branch/main/graph/badge.svg?token=TYVKWPH17K)](https://codecov.io/gh/FrideakisAB/EmeraldEngine)
 
 EmeraldEngine - 3D игровой движок написанный на C++.
 
