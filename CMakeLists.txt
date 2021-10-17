@@ -45,6 +45,22 @@ set(Source
 	src/Log.cpp
 	src/Engine/Engine.cpp
 
+	src/Utils/json.cpp
+
+	src/ECS/IEntity.cpp
+	src/ECS/ISystem.cpp
+	src/ECS/IComponent.cpp
+	src/ECS/EntityManager.cpp
+	src/ECS/SystemManager.cpp
+	src/ECS/ComponentManager.cpp
+
+	src/ECS/Event/IEvent.cpp
+	src/ECS/Event/EventHandler.cpp
+	src/ECS/Event/IEventListener.cpp
+
+	src/ECS/Utils/Timer.cpp
+	src/ECS/Utils/FamilyTypeID.cpp
+
 	src/Memory/MemoryManager.cpp
 	src/Memory/GlobalMemoryUser.cpp
 
