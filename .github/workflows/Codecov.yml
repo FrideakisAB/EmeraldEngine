@@ -1,0 +1,49 @@
+name: Codecov
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Python
+      uses: actions/setup-python@v2
+    - uses: actions/checkout@master
+    - name: Install Conan
+      run: pip install conan
+    - name: Configure
+      run: |
+        cd ${{ github.workspace }}
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Debug -S ..
+    - name: Build
+      run: |
+        cd build
+        cmake --build . --target tests
+    - name: Run tests
+      run: |
+        cd ${{ github.workspace }}
+        cd build\bin
+        tests.exe
+    - name: Setup OpenCppCoverage and add to PATh
+      run: |
+        choco install OpenCppCoverage -y
+        echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
+    - name: Generate Report
+      shell: cmd
+      run: |
+        cd ${{ github.workspace }}
+        cd build
+        OpenCppCoverage.exe --sources EmeraldEngine --export_type cobertura:CodeCov.xml -- bin/tests.exe
+    - name: Upload Report to Codecov
+      uses: codecov/codecov-action@v2.1.0
+      with:
+        files: ${{ github.workspace }}/build/CodeCov.xml
+        fail_ci_if_error: true
+        functionalities: fix
