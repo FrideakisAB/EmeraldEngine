@@ -39,7 +39,6 @@ jobs:
     - name: Upload Report to Codecov
       uses: codecov/codecov-action@v2.1.0
       with:
-        files: ${{ github.workspace }}\build\CodeCov.xml
-        directory: ${{ github.workspace }}\build
+        files: ./CodeCov.xml
         fail_ci_if_error: true
         functionalities: fix
