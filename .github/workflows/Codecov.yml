@@ -26,11 +26,6 @@ jobs:
       run: |
         cd build
         cmake --build . --target tests
-    - name: Run tests
-      run: |
-        cd ${{ github.workspace }}
-        cd build\bin
-        tests.exe
     - name: Setup OpenCppCoverage and add to PATh
       run: |
         choco install OpenCppCoverage -y
