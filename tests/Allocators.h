@@ -3,6 +3,7 @@
 #include "Memory/Allocator/StackAllocator.h"
 #include "Memory/Allocator/PoolAllocator.h"
 #include "Memory/Allocator/ListLinearAllocator.h"
+#include "Memory/Allocator/MemoryChunkAllocator.h"
 
 TEST_CASE("IAllocator test", "[IAllocator]")
 {
@@ -181,4 +182,32 @@ TEST_CASE("ListLinearAllocator test", "[ListLinearAllocator]")
 
         alloc.Clear();
     }
+}
+
+TEST_CASE("MemoryChunkAllocator test", "[MemoryChunkAllocator]")
+{
+    logger = new Log();
+
+    SECTION("Base test")
+    {
+        auto *alloc = new Memory::Allocator::MemoryChunkAllocator<double, 4>();
+        
+        for (auto obj : *alloc)
+            REQUIRE( obj == 0 );
+
+        auto *testValue = (double *)alloc->CreateObject();
+        *testValue = 0;
+
+        for (int i = 0; i < 10; ++i)
+            (*(double*)alloc->CreateObject()) = 0;
+        for (auto obj : *alloc)
+            REQUIRE( obj == 0 );
+
+        alloc->DestroyObject(testValue);
+        alloc->DestroyObject(nullptr);
+
+        delete alloc;
+    }
+
+    delete logger;
 }

@@ -1,7 +1,8 @@
 #ifndef MEMORYCHUNKALLOCATOR_H
 #define MEMORYCHUNKALLOCATOR_H
 
-#include <forward_list>
+#include <vector>
+#include <list>
 #include "PoolAllocator.h"
 #include "Memory/GlobalMemoryUser.h"
 
@@ -15,7 +16,7 @@ namespace Memory::Allocator {
 
     public:
         using Allocator = Memory::Allocator::PoolAllocator;
-        using ObjectList = std::forward_list<OBJECT_TYPE *>;
+        using ObjectList = std::list<OBJECT_TYPE *>;
 
         class MemoryChunk {
         public:
@@ -34,7 +35,7 @@ namespace Memory::Allocator {
             }
         };
 
-        using MemoryChunks = std::forward_list<MemoryChunk *>;
+        using MemoryChunks = std::list<MemoryChunk *>;
 
         class iterator {
         public:
@@ -135,7 +136,7 @@ namespace Memory::Allocator {
                 if (chunk->objects.size() > maxObjects)
                     continue;
 
-                slot = chunk->allocator->allocate(sizeof(OBJECT_TYPE), alignof(OBJECT_TYPE));
+                slot = chunk->allocator->Allocate(sizeof(OBJECT_TYPE), alignof(OBJECT_TYPE));
                 if (slot != nullptr)
                 {
                     chunk->objects.push_back((OBJECT_TYPE *)slot);
