@@ -190,10 +190,21 @@ TEST_CASE("MemoryChunkAllocator test", "[MemoryChunkAllocator]")
 
     SECTION("Base test")
     {
-        auto *alloc = new Memory::Allocator::MemoryChunkAllocator<double, 4>();
-        
+        auto *alloc = new Memory::Allocator::MemoryChunkAllocator<double, 8>();
+
+        for (auto obj : *alloc) {}
+
+        (*(double*)alloc->CreateObject()) = 0;
+        (*(double*)alloc->CreateObject()) = 0;
+        (*(double*)alloc->CreateObject()) = 0;
+        (*(double*)alloc->CreateObject()) = 0;
+        (*(double*)alloc->CreateObject()) = 0;
+
         for (auto obj : *alloc)
             REQUIRE( obj == 0 );
+
+        for (auto it = std::reverse_iterator((*alloc).end()); it != std::reverse_iterator((*alloc).begin()); ++it)
+            REQUIRE( *it == 0 );
 
         auto *testValue = (double *)alloc->CreateObject();
         *testValue = 0;

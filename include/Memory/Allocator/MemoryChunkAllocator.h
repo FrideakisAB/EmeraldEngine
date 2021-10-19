@@ -39,7 +39,7 @@ namespace Memory::Allocator {
 
         class iterator {
         public:
-            using iterator_category = std::forward_iterator_tag;
+            using iterator_category = std::bidirectional_iterator_tag;
             using value_type = OBJECT_TYPE;
             using difference_type = std::ptrdiff_t;
             using pointer = OBJECT_TYPE*;
@@ -47,14 +47,15 @@ namespace Memory::Allocator {
 
         private:
             typename MemoryChunks::iterator currentChunk;
+            typename MemoryChunks::iterator anBegin;
             typename MemoryChunks::iterator anEnd;
             typename ObjectList::iterator currentObject;
 
         public:
-            iterator(typename MemoryChunks::iterator begin, typename MemoryChunks::iterator end) :
-                    currentChunk(begin), anEnd(end)
+            iterator(typename MemoryChunks::iterator begin, typename MemoryChunks::iterator end, bool isEnd) :
+                    currentChunk(begin), anBegin(begin), anEnd(end)
             {
-                if (begin != end)
+                if (begin != end && !isEnd)
                 {
                     assert((*currentChunk) != nullptr);
                     currentObject = (*currentChunk)->objects.begin();
@@ -63,7 +64,10 @@ namespace Memory::Allocator {
                         currentChunk = anEnd;
                 }
                 else
+                {
+                    currentChunk = end;
                     currentObject = (*std::prev(anEnd))->objects.end();
+                }
             }
 
             inline iterator &operator++()
@@ -84,17 +88,39 @@ namespace Memory::Allocator {
                 return *this;
             }
 
+            inline iterator &operator--()
+            {
+                if (currentChunk == anEnd || currentObject == (*currentChunk)->objects.begin())
+                {
+                    while (currentChunk != anBegin)
+                    {
+                        --currentChunk;
+
+                        assert((*currentChunk) != nullptr);
+                        if ((*currentChunk)->objects.begin() != (*currentChunk)->objects.end())
+                        {
+                            currentObject = (*currentChunk)->objects.end();
+                            break;
+                        }
+                    }
+                }
+
+                --currentObject;
+
+                return *this;
+            }
+
             [[nodiscard]] inline reference operator*() const { return *(*currentObject); }
             [[nodiscard]] inline pointer operator->() const { return *currentObject; }
 
             [[nodiscard]] inline bool operator==(const iterator &other) const
             {
-                return ((this->currentChunk == other.currentChunk) && (this->currentObject == other.currentObject));
+                return ((currentChunk == other.currentChunk) && (currentObject == other.currentObject));
             }
 
             [[nodiscard]] inline bool operator!=(const iterator &other) const
             {
-                return (!((this->currentChunk == other.currentChunk) && (this->currentObject == other.currentObject)));
+                return (!((currentChunk == other.currentChunk) && (currentObject == other.currentObject)));
             }
         };
 
@@ -179,8 +205,8 @@ namespace Memory::Allocator {
             (*chunk)->allocator->Free(object);
         }
 
-        [[nodiscard]] inline iterator begin() { return iterator(chunks.begin(), chunks.end()); }
-        [[nodiscard]] inline iterator end() { return iterator(chunks.end(), chunks.end()); }
+        [[nodiscard]] inline iterator begin() { return iterator(chunks.begin(), chunks.end(), false); }
+        [[nodiscard]] inline iterator end() { return iterator(chunks.begin(), chunks.end(), true); }
     };
 }
 
