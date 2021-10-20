@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include "ECS/IEntity.h"
+#include <boost/type_index.hpp>
 #include "ECS/Utils/FamilyTypeID.h"
 
 namespace ECS {
@@ -14,6 +15,19 @@ namespace ECS {
 
         void operator delete[](void *) {}
         void operator delete(void *) {}
+
+        [[nodiscard]] json SerializeObj() const override
+        {
+            json ret;
+            ret["base"] = IEntity::SerializeObj();
+            ret["base"]["ESID"] = boost::typeindex::type_id<E>().pretty_name();
+            return ret;
+        }
+
+        void UnSerializeObj(const json &j) override
+        {
+            IEntity::UnSerializeObj(j["base"]);
+        }
 
         [[nodiscard]] const EntityTypeId GetStaticEntityTypeId() const final { return STATIC_ENTITY_TYPE_ID; }
     };

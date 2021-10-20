@@ -4,3 +4,4 @@
 #include "Singleton.h"
 #include "MemoryCommon.h"
 #include "Allocators.h"
+#include "Entity.h"

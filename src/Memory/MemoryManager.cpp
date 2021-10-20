@@ -14,11 +14,13 @@ namespace Memory {
     {
         if (!pendingMemory.empty())
         {
-            for (auto i: pendingMemory)
+            for (auto i : pendingMemory)
             {
                 logger->Error("%s memory user didn't release allocated memory %llu", i.first, (u64)i.second);
                 Free(i.second);
             }
+
+            pendingMemory.clear();
         }
         else
             logger->Info("No memory leaks detected");

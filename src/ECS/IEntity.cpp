@@ -210,6 +210,7 @@ namespace ECS {
 
         data["components"] = SerializeComponents();
         data["childCount"] = childCount;
+        data["localActive"] = localActive;
 
         u32 i = 0;
         for (auto &child : GetChildIterable())
@@ -227,6 +228,8 @@ namespace ECS {
         auto &EM = Engine::Get().GetEntityManager();
 
         UnSerializeComponents(j["components"]);
+
+        localActive = j["localActive"].get<u8>();
 
         size_t oldChildCount = j["childCount"];
         for (size_t i = 0; i < oldChildCount; ++i)

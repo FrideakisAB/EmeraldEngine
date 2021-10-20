@@ -19,7 +19,7 @@ namespace ECS {
         public:
             EntityId Create() override
             {
-                return ECS_Engine->GetEntityManager()->CreateEntity<T>();
+                return Engine::Get().GetEntityManager().CreateEntity<T>();
             }
         };
 

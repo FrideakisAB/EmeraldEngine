@@ -5,7 +5,7 @@
 
 TEST_CASE("MemoryManager interface and work test", "[MemoryManager]")
 {
-    static bool isErrorGenerate = false;
+    static bool isErrorGenerate;
 
     class CheckerLog final : public Log {
     protected:
@@ -19,6 +19,9 @@ TEST_CASE("MemoryManager interface and work test", "[MemoryManager]")
     };
 
     logger = new CheckerLog();
+
+    Memory::MemoryManager::Get().CheckMemoryLeaks();
+    isErrorGenerate = false;
 
     SECTION("Interface test")
     {
