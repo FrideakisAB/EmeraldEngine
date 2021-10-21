@@ -6,16 +6,13 @@
 #include "ECS/Serialization/ComponentFactory.h"
 #include <set>
 
-TEST_CASE("Entity subsystem test", "[IAllocator]")
+TEST_CASE("Entity subsystem test", "[Entity]")
 {
     auto &EM = Engine::Get().GetEntityManager();
 
     SECTION("Base activity test")
     {
-        class TestEntity final : public ECS::Entity<TestEntity> {
-        public:
-            TestEntity() {}
-        };
+        class TestEntity final : public ECS::Entity<TestEntity> {};
 
         auto *entity = EM.GetEntity(EM.CreateEntity<TestEntity>());
 
@@ -47,9 +44,6 @@ TEST_CASE("Entity subsystem test", "[IAllocator]")
             {
                 isDelete = true;
             }
-
-        public:
-            TestEntity() {}
         };
 
         REQUIRE( TestEntity::STATIC_ENTITY_TYPE_ID != 0 );
@@ -72,10 +66,7 @@ TEST_CASE("Entity subsystem test", "[IAllocator]")
 
     SECTION("Scene graph test")
     {
-        class TestEntity final : public ECS::Entity<TestEntity> {
-        public:
-            TestEntity() {}
-        };
+        class TestEntity final : public ECS::Entity<TestEntity> {};
 
         auto *entity = EM.GetEntity(EM.CreateEntity<TestEntity>());
         auto *entity2 = EM.GetEntity(EM.CreateEntity<TestEntity>());
@@ -142,10 +133,7 @@ TEST_CASE("Entity subsystem test", "[IAllocator]")
 
     SECTION("Activity in graph test")
     {
-        class TestEntity final : public ECS::Entity<TestEntity> {
-        public:
-            TestEntity() {}
-        };
+        class TestEntity final : public ECS::Entity<TestEntity> {};
 
         auto *entity = EM.GetEntity(EM.CreateEntity<TestEntity>());
         auto *entity2 = EM.GetEntity(EM.CreateEntity<TestEntity>());
@@ -173,15 +161,9 @@ TEST_CASE("Entity subsystem test", "[IAllocator]")
 
     SECTION("Serialize & components test")
     {
-        class TestEntity final : public ECS::Entity<TestEntity> {
-        public:
-            TestEntity() {}
-        };
+        class TestEntity final : public ECS::Entity<TestEntity> {};
 
-        class TestComponent final : public ECS::Component<TestComponent> {
-        public:
-            TestComponent() {}
-        };
+        class TestComponent final : public ECS::Component<TestComponent> {};
 
         Engine::Get().GetEntityFactory().Register<TestEntity>();
         Engine::Get().GetComponentFactory().Register<TestComponent>();
@@ -221,4 +203,6 @@ TEST_CASE("Entity subsystem test", "[IAllocator]")
         EM.DestroyEntity(entity2->GetEntityId());
         EM.DestroyEntity(entity3->GetEntityId());
     }
+
+    EM.RemoveDestroyedEntities();
 }

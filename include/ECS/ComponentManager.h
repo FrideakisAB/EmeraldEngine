@@ -112,9 +112,9 @@ namespace ECS {
             void *memory = GetComponentContainer<T>()->CreateObject();
 
             ComponentId componentId = AcquireComponentId((T*)memory);
-            ((T*)memory)->componentId = componentId;
 
             IComponent *component = new(memory)T(std::forward<ARGS>(args)...);
+            ((T*)memory)->componentId = componentId;
 
             component->owner = entityId;
             component->hashValue = ENTITY_COMPONENT_ID_HASHER(entityId) ^ (ENTITY_COMPONENT_ID_HASHER(componentId) << 1);
@@ -130,10 +130,10 @@ namespace ECS {
             static const ComponentTypeId CTID = T::STATIC_COMPONENT_TYPE_ID;
             const ComponentId componentId = entityComponentMap[entityId.index][CTID];
 
-            IComponent *component = componentLut[componentId];
-
-            if (component == nullptr)
+            if (componentId == ECS::INVALID_COMPONENT_ID)
                 return;
+
+            IComponent *component = componentLut[componentId];
 
             GetComponentContainer<T>()->DestroyComponent(component);
 
@@ -226,18 +226,6 @@ namespace ECS {
         ComponentProxy<T> GetIterable()
         {
             return ComponentProxy<T>(GetComponentContainer<T>());
-        }
-
-        template<class T>
-        inline TComponentIterator<T> begin()
-        {
-            return GetComponentContainer<T>()->begin();
-        }
-
-        template<class T>
-        inline TComponentIterator<T> end()
-        {
-            return GetComponentContainer<T>()->end();
         }
     };
 }

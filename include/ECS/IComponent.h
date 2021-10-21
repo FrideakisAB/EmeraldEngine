@@ -23,6 +23,8 @@ namespace ECS {
         u8 reserve: 6;
 
         virtual void UpdateTree() {};
+        virtual void OnEnable() {}
+        virtual void OnDisable() {}
 
     public:
         IComponent();
@@ -35,12 +37,9 @@ namespace ECS {
 
         [[nodiscard]] inline EntityId GetOwner() const noexcept { return owner; }
 
-        inline void SetActive(bool active);
+        void SetActive(bool active);
 
         [[nodiscard]] inline bool IsActive() const noexcept { return enabled; }
-
-        virtual void OnEnable() {}
-        virtual void OnDisable() {}
     };
 }
 

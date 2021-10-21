@@ -36,7 +36,7 @@ namespace ECS {
         ~SystemManager() final;
 
         template<class T, class... ARGS>
-        T *AddSystem(ARGS &&... systemArgs)
+        T *AddSystem(ARGS &&...systemArgs)
         {
             static const u64 STID = T::STATIC_SYSTEM_TYPE_ID;
 
@@ -48,8 +48,8 @@ namespace ECS {
             void *memory = systemAllocator->Allocate(sizeof(T), alignof(T));
             if (memory != nullptr)
             {
-                ((T*)memory)->systemManagerInstance = this;
                 system = new(memory)T(std::forward<ARGS>(systemArgs)...);
+                ((T*)memory)->systemManagerInstance = this;
                 systems[STID] = system;
             }
             else
@@ -73,17 +73,17 @@ namespace ECS {
         template<class System, class Dependency>
         void AddSystemDependency(System target, Dependency dependency)
         {
-            const u64 TARGET_ID = target->GetStaticSystemTypeID();
-            const u64 DEPEND_ID = dependency->GetStaticSystemTypeID();
+            const u64 TARGET_ID = target->GetStaticSystemTypeId();
+            const u64 DEPEND_ID = dependency->GetStaticSystemTypeId();
 
             systemDependencyMatrix[TARGET_ID][DEPEND_ID] = true;
         }
 
         template<class Target, class Dependency, class... Dependencies>
-        void AddSystemDependency(Target target, Dependency dependency, Dependencies &&... dependencies)
+        void AddSystemDependency(Target target, Dependency dependency, Dependencies &&...dependencies)
         {
-            const u64 TARGET_ID = target->GetStaticSystemTypeID();
-            const u64 DEPEND_ID = dependency->GetStaticSystemTypeID();
+            const u64 TARGET_ID = target->GetStaticSystemTypeId();
+            const u64 DEPEND_ID = dependency->GetStaticSystemTypeId();
 
             systemDependencyMatrix[TARGET_ID][DEPEND_ID] = true;
 
@@ -120,7 +120,7 @@ namespace ECS {
             if (it != systems.end())
                 it->second->enabled = false;
             else
-                logger->Warning(std::string("System not added: " + std::string(typeid(T).name())));
+                logger->Warning("System not added: %s", typeid(T).name());
         }
 
         template<class T>
@@ -132,7 +132,7 @@ namespace ECS {
             if (it != systems.end())
                 it->second->updateInterval = interval_ms;
             else
-                logger->Warning(std::string("System not added: " + std::string(typeid(T).name())));
+                logger->Warning("System not added: %s", typeid(T).name());
         }
 
         template<class T>
@@ -147,14 +147,14 @@ namespace ECS {
                 UpdateSystemWorkOrder();
             }
             else
-                logger->Warning(std::string("System not added: " + std::string(typeid(T).name())));
+                logger->Warning("System not added: %s", typeid(T).name());
         }
 
         [[nodiscard]] SystemWorkStateMask GetSystemWorkState() const;
         void SetSystemWorkState(SystemWorkStateMask mask);
 
         template<class... ActiveSystems>
-        SystemWorkStateMask GenerateActiveSystemWorkState(ActiveSystems &&... activeSystems)
+        SystemWorkStateMask GenerateActiveSystemWorkState(ActiveSystems &&...activeSystems)
         {
             SystemWorkStateMask mask(systemWorkOrder.size(), false);
 

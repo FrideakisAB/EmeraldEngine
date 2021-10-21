@@ -83,10 +83,10 @@ namespace ECS {
 
             ECS::EntityId entityId = AcquireEntityId((T *)memory);
 
+            IEntity *entity = new(memory)T(std::forward<ARGS>(args)...);
+
             ((T *)memory)->entityId = entityId;
             ((T *)memory)->componentManagerInstance = componentManagerInstance;
-
-            IEntity *entity = new(memory)T(std::forward<ARGS>(args)...);
 
             return entityId;
         }
