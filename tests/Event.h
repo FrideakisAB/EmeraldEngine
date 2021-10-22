@@ -22,7 +22,7 @@ TEST_CASE( "Event system work test", "[Event]" )
             {
                 REQUIRE( event->GetEventTypeId() == TestEvent::STATIC_EVENT_TYPE_ID );
                 REQUIRE( event->GetEventTypeId() != ECS::Event::INVALID_EVENT_TYPE );
-                REQUIRE( event->GetTimeCreated() == 0 );
+                REQUIRE( event->GetTimeCreated() != 0 );
                 REQUIRE( event->i == 11 );
 
                 isEventAccepted = true;
@@ -42,6 +42,7 @@ TEST_CASE( "Event system work test", "[Event]" )
 
         TestListener listener{};
 
+        engine.Update();
         engine.SendEvent<TestEvent>(11);
 
         REQUIRE( isEventAccepted == false );
