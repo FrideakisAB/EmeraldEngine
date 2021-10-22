@@ -22,7 +22,6 @@ namespace ECS {
     namespace Event {
         class IEvent;
         class IEventListener;
-        class EventHandler;
     }
 
     class EntityManager;

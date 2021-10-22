@@ -28,9 +28,10 @@ namespace ECS::Event {
 
         public:
             EventDelegate(Class *receiver, Callback &callbackFunction) :
-                    receiver(receiver), callback(callbackFunction) {}
+                    receiver(receiver), callback(callbackFunction)
+            {}
 
-            IEventDelegate *Clone() override
+            [[nodiscard]] IEventDelegate *Clone() override
             {
                 return new EventDelegate(receiver, callback);
             }

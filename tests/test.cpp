@@ -7,5 +7,7 @@
 #include "Entity.h"
 #include "System.h"
 #include "Component.h"
+#include "Event.h"
+#include "Utils.h"
 
 #include "FinishCleanup.h"

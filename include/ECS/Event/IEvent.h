@@ -7,7 +7,7 @@ namespace ECS::Event {
     using EventTypeId = TypeID;
     using EventTimestamp = TimeStamp;
 
-    static const EventTypeId INVALID_EVENTTYPE = INVALID_TYPE_ID;
+    static const EventTypeId INVALID_EVENT_TYPE = INVALID_TYPE_ID;
 
     class IEvent {
     private:

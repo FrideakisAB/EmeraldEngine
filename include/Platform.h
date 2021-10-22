@@ -51,16 +51,16 @@ union TimeStamp {
     f32 asFloat;
     u32 asUInt;
 
-    explicit TimeStamp() noexcept: asUInt(0U) {}
+    explicit TimeStamp() noexcept : asUInt(0U) {}
 
-    explicit TimeStamp(f32 floatValue) noexcept: asFloat(floatValue) {}
+    explicit TimeStamp(f32 floatValue) noexcept : asFloat(floatValue) {}
 
-    explicit operator u32() const noexcept { return this->asUInt; }
+    operator u32() const noexcept { return asUInt; }
 
-    inline bool operator==(const TimeStamp &other) const noexcept { return this->asUInt == other.asUInt; }
-    inline bool operator!=(const TimeStamp &other) const noexcept { return this->asUInt != other.asUInt; }
-    inline bool operator<(const TimeStamp &other) const noexcept { return this->asFloat < other.asFloat; }
-    inline bool operator>(const TimeStamp &other) const noexcept { return this->asFloat > other.asFloat; }
+    inline bool operator==(const TimeStamp &other) const noexcept { return asUInt == other.asUInt; }
+    inline bool operator!=(const TimeStamp &other) const noexcept { return asUInt != other.asUInt; }
+    inline bool operator<(const TimeStamp &other) const noexcept { return asFloat < other.asFloat; }
+    inline bool operator>(const TimeStamp &other) const noexcept { return asFloat > other.asFloat; }
 };
 
 #endif

@@ -3,6 +3,7 @@
 
 #include <list>
 #include "ECS/API.h"
+#include "Engine/Engine.h"
 #include "ECS/Event/EventDelegate.h"
 
 namespace ECS::Event {
@@ -22,7 +23,7 @@ namespace ECS::Event {
             Internal::IEventDelegate *eventDelegate = new Internal::EventDelegate<C, E>(static_cast<C *>(this), Callback);
 
             registeredCallbacks.push_back(eventDelegate);
-            ECS_Engine->template SubscribeEvent<E>(eventDelegate);
+            Engine::Get().template SubscribeEvent<E>(eventDelegate);
         }
 
         template<class E, class C>
@@ -40,7 +41,7 @@ namespace ECS::Event {
                         }
                     );
 
-                    ECS_Engine->UnsubscribeEvent(&delegate);
+                    Engine::Get().UnsubscribeEvent(&delegate);
                     break;
                 }
             }
