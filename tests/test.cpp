@@ -9,5 +9,7 @@
 #include "Component.h"
 #include "Event.h"
 #include "Utils.h"
+#include "Assets.h"
+#include "Material.h"
 
 #include "FinishCleanup.h"

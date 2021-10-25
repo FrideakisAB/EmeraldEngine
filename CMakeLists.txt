@@ -47,6 +47,9 @@ set(Source
 
 	src/Utils/json.cpp
 
+	src/Render/Material.cpp
+	src/Render/ShaderTools.cpp
+
 	src/ECS/IEntity.cpp
 	src/ECS/ISystem.cpp
 	src/ECS/IComponent.cpp
