@@ -43,7 +43,13 @@ endif()
 
 set(Source
 	src/Log.cpp
+
 	src/Engine/Engine.cpp
+
+	src/Engine/Components/Camera.cpp
+	src/Engine/Components/Transform.cpp
+
+	src/Engine/Systems/RenderSystem.cpp
 
 	src/Utils/json.cpp
 

@@ -21,6 +21,8 @@ TEST_CASE( "Material work test", "[Material]" )
 
         REQUIRE( material.Shader == "Test" );
         REQUIRE( std::get<f32>(material.Uniforms["test"].value) == 10.0f );
+
+        delete material2;
     }
 
     SECTION("Uniforms save test")
