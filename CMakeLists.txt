@@ -32,7 +32,6 @@ include(${CMAKE_BINARY_DIR}/conan.cmake)
 conan_cmake_run(CONANFILE conanfile.txt 
 				INSTALL_FOLDER ${CMAKE_BINARY_DIR}/pkgs
 				BASIC_SETUP
-				CMAKE_TARGETS
 				BUILD missing
 )
 
@@ -88,12 +87,7 @@ add_executable(tests
 
 target_link_libraries(tests
 	OpenGL::GL
-	CONAN_PKG::glm
-	CONAN_PKG::glew
-	CONAN_PKG::glfw
-	CONAN_PKG::boost
-	CONAN_PKG::catch2
-	CONAN_PKG::nlohmann_json
+	${CONAN_LIBS}
 )
 
 if(WIN32)
@@ -105,10 +99,6 @@ if(WIN32)
 
 	target_link_libraries(EmeraldEngine_App
 		OpenGL::GL
-		CONAN_PKG::glm
-		CONAN_PKG::glew
-		CONAN_PKG::glfw
-		CONAN_PKG::boost
-		CONAN_PKG::nlohmann_json
+		${CONAN_LIBS}
 	)
 endif()
