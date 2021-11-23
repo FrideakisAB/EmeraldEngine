@@ -1,6 +1,6 @@
 #include "Render/ShaderTools.h"
 
-namespace ns {
+namespace Shaders {
     void to_json(json &j, const Shaders::ShaderParamValue &paramValue)
     {
         j = json{{"valueType", paramValue.valueType}};
@@ -24,27 +24,27 @@ namespace ns {
             break;
 
         case Shaders::ShaderValue::Vector2:
-            to_json(j["value"], std::get<glm::vec2>(paramValue.value));
+            j["value"] = std::get<glm::vec2>(paramValue.value);
             break;
 
         case Shaders::ShaderValue::Vector3:
-            to_json(j["value"], std::get<glm::vec3>(paramValue.value));
+            j["value"] = std::get<glm::vec3>(paramValue.value);
             break;
 
         case Shaders::ShaderValue::Vector4:
-            to_json(j["value"], std::get<glm::vec4>(paramValue.value));
+            j["value"] = std::get<glm::vec4>(paramValue.value);
             break;
 
         case Shaders::ShaderValue::Mat2:
-            to_json(j["value"], std::get<glm::mat2>(paramValue.value));
+            j["value"] = std::get<glm::mat2>(paramValue.value);
             break;
 
         case Shaders::ShaderValue::Mat3:
-            to_json(j["value"], std::get<glm::mat3>(paramValue.value));
+            j["value"] = std::get<glm::mat3>(paramValue.value);
             break;
 
         case Shaders::ShaderValue::Mat4:
-            to_json(j["value"], std::get<glm::mat4>(paramValue.value));
+            j["value"] = std::get<glm::mat4>(paramValue.value);
             break;
 
         default:
@@ -75,52 +75,28 @@ namespace ns {
             break;
 
         case Shaders::ShaderValue::Vector2:
-        {
-            glm::vec2 value;
-            from_json(j["value"], value);
-            paramValue.value = value;
+            paramValue.value = j["value"].get<glm::vec2>();
             break;
-        }
 
         case Shaders::ShaderValue::Vector3:
-        {
-            glm::vec3 value;
-            from_json(j["value"], value);
-            paramValue.value = value;
+            paramValue.value = j["value"].get<glm::vec3>();
             break;
-        }
 
         case Shaders::ShaderValue::Vector4:
-        {
-            glm::vec4 value;
-            from_json(j["value"], value);
-            paramValue.value = value;
+            paramValue.value = j["value"].get<glm::vec4>();
             break;
-        }
 
         case Shaders::ShaderValue::Mat2:
-        {
-            glm::mat2 value;
-            from_json(j["value"], value);
-            paramValue.value = value;
+            paramValue.value = j["value"].get<glm::mat2>();
             break;
-        }
 
         case Shaders::ShaderValue::Mat3:
-        {
-            glm::mat3 value;
-            from_json(j["value"], value);
-            paramValue.value = value;
+            paramValue.value = j["value"].get<glm::mat3>();
             break;
-        }
 
         case Shaders::ShaderValue::Mat4:
-        {
-            glm::mat4 value;
-            from_json(j["value"], value);
-            paramValue.value = value;
+            paramValue.value = j["value"].get<glm::mat4>();
             break;
-        }
 
         default:
             break;

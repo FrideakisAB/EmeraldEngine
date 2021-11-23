@@ -19,7 +19,7 @@ json JsonUtils::TryParse(const std::string &str) noexcept
     return j;
 }
 
-namespace ns {
+namespace glm {
     void to_json(json &j, const glm::vec2 &vector)
     {
         j = json{{"value", {vector.x, vector.y}}};

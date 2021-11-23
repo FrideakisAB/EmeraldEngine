@@ -40,9 +40,7 @@ namespace Shaders {
                 glm::vec2, glm::vec3, glm::vec4,
                 glm::mat2, glm::mat3, glm::mat4> value;
     };
-}
 
-namespace ns {
     void to_json(json &j, const Shaders::ShaderParamValue &paramValue);
     void from_json(const json &j, Shaders::ShaderParamValue &paramValue);
 }
