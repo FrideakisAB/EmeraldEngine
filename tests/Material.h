@@ -1,4 +1,5 @@
 #include "Render/Material.h"
+#include "Engine/Components/MaterialComponent.h"
 
 TEST_CASE( "Material work test", "[Material]" )
 {
@@ -10,7 +11,7 @@ TEST_CASE( "Material work test", "[Material]" )
 
         material.Shader = "Test";
 
-        auto *material2 = static_cast<Material *>(material.Clone());
+        auto *material2 = static_cast<Material*>(material.Clone());
 
         REQUIRE( material.Shader == material2->Shader );
 
@@ -46,12 +47,39 @@ TEST_CASE( "Material work test", "[Material]" )
         REQUIRE( std::get<i32>(material.Uniforms["Int"].value) == 1 );
         REQUIRE( std::get<u32>(material.Uniforms["UnsignedInt"].value) == 1u );
         REQUIRE( std::get<f32>(material.Uniforms["Float"].value) == 1.0f );
-        REQUIRE( std::get<f64>(material.Uniforms["Double"].value) == 1.0);
-        REQUIRE( std::get<glm::vec2>(material.Uniforms["Vector2"].value) == glm::vec2(1.0f));
-        REQUIRE( std::get<glm::vec3>(material.Uniforms["Vector3"].value) == glm::vec3(1.0f));
-        REQUIRE( std::get<glm::vec4>(material.Uniforms["Vector4"].value) == glm::vec4(1.0f));
-        REQUIRE( std::get<glm::mat2>(material.Uniforms["Mat2"].value) == glm::mat2(1.0f));
-        REQUIRE( std::get<glm::mat3>(material.Uniforms["Mat3"].value) == glm::mat3(1.0f));
-        REQUIRE( std::get<glm::mat4>(material.Uniforms["Mat4"].value) == glm::mat4(1.0f));
+        REQUIRE( std::get<f64>(material.Uniforms["Double"].value) == 1.0 );
+        REQUIRE( std::get<glm::vec2>(material.Uniforms["Vector2"].value) == glm::vec2(1.0f) );
+        REQUIRE( std::get<glm::vec3>(material.Uniforms["Vector3"].value) == glm::vec3(1.0f) );
+        REQUIRE( std::get<glm::vec4>(material.Uniforms["Vector4"].value) == glm::vec4(1.0f) );
+        REQUIRE( std::get<glm::mat2>(material.Uniforms["Mat2"].value) == glm::mat2(1.0f) );
+        REQUIRE( std::get<glm::mat3>(material.Uniforms["Mat3"].value) == glm::mat3(1.0f) );
+        REQUIRE( std::get<glm::mat4>(material.Uniforms["Mat4"].value) == glm::mat4(1.0f) );
+    }
+
+    SECTION("MaterialComponent test")
+    {
+        class Test : public IAsset {
+        public:
+            [[nodiscard]] size_t GetTypeId() const noexcept final
+            {
+                return 1;
+            }
+        };
+
+        auto *material = new MaterialComponent();
+
+        REQUIRE( material->IsValid() == false );
+
+        material->SetMaterial(std::make_shared<Test>());
+
+        REQUIRE( material->IsValid() == false );
+
+        auto mat = std::make_shared<Material>();
+
+        material->SetMaterial(mat);
+
+        REQUIRE( material->IsValid() == true );
+        REQUIRE( material->GetMaterial() == mat.get() );
+        REQUIRE( material->GetMaterialHandle() == mat );
     }
 }

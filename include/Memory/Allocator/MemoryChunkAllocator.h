@@ -140,7 +140,7 @@ namespace Memory::Allocator {
             for (auto chunk : chunks)
             {
                 for (auto obj : chunk->objects)
-                    ((OBJECT_TYPE *) obj)->~OBJECT_TYPE();
+                    obj->~OBJECT_TYPE();
 
                 chunk->objects.clear();
 
@@ -165,7 +165,7 @@ namespace Memory::Allocator {
                 slot = chunk->allocator->Allocate(sizeof(OBJECT_TYPE), alignof(OBJECT_TYPE));
                 if (slot != nullptr)
                 {
-                    chunk->objects.push_back((OBJECT_TYPE *)slot);
+                    chunk->objects.push_back(static_cast<OBJECT_TYPE*>(slot));
                     break;
                 }
             }
@@ -181,7 +181,7 @@ namespace Memory::Allocator {
 
                 assert(slot != nullptr && "Unable to create new object. Out of memory?!");
                 newChunk->objects.clear();
-                newChunk->objects.push_back((OBJECT_TYPE *)slot);
+                newChunk->objects.push_back(static_cast<OBJECT_TYPE*>(slot));
             }
 
             return slot;
@@ -201,7 +201,7 @@ namespace Memory::Allocator {
                 return;
             }
 
-            (*chunk)->objects.remove((OBJECT_TYPE *) object);
+            (*chunk)->objects.remove(static_cast<OBJECT_TYPE*>(object));
             (*chunk)->allocator->Free(object);
         }
 

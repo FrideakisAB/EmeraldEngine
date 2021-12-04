@@ -9,6 +9,7 @@ namespace ECS {
 
     EntityManager::~EntityManager()
     {
+        RemoveDestroyedEntities();
         for (auto ec : entityRegistry)
         {
             delete ec.second;

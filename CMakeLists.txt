@@ -47,6 +47,7 @@ set(Source
 
 	src/Engine/Components/Camera.cpp
 	src/Engine/Components/Transform.cpp
+	src/Engine/Components/MaterialComponent.cpp
 
 	src/Engine/Systems/RenderSystem.cpp
 

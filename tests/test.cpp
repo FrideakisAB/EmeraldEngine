@@ -11,5 +11,6 @@
 #include "Utils.h"
 #include "Assets.h"
 #include "Material.h"
+#include "Transform.h"
 
 #include "FinishCleanup.h"

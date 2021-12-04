@@ -13,8 +13,8 @@ glm::mat4 Camera::GetVPMatrix(u32 width, u32 height) const
     glm::vec3 skew;
     glm::vec4 perspective;
 
-    auto *transform = Engine::Get().GetComponentManager().GetComponent<Transform>(owner);
-    glm::decompose(transform->GetMat(), sizeScale, orientation, position, skew, perspective);
+    if (auto *transform = Engine::Get().GetComponentManager().GetComponent<Transform>(owner))
+        glm::decompose(transform->GetMat(), sizeScale, orientation, position, skew, perspective);
 
     glm::mat4 projection;
 
@@ -44,8 +44,8 @@ glm::mat4 Camera::GetViewMatrix() const
     glm::vec3 skew;
     glm::vec4 perspective;
 
-    auto *transform = Engine::Get().GetComponentManager().GetComponent<Transform>(owner);
-    glm::decompose(transform->GetMat(), sizeScale, orientation, position, skew, perspective);
+    if (auto *transform = Engine::Get().GetComponentManager().GetComponent<Transform>(owner))
+        glm::decompose(transform->GetMat(), sizeScale, orientation, position, skew, perspective);
 
     glm::vec3 up = orientation * Transform::WorldUp;
     glm::vec3 forward = orientation * Transform::WorldFront;
