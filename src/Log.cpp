@@ -1,7 +1,9 @@
 #include "Log.h"
 
 #include <ctime>
+#include <chrono>
 #include <sstream>
+#include <iomanip>
 
 Log *logger = nullptr;
 
@@ -18,19 +20,19 @@ Log::~Log()
 
 void Log::Send(const std::string &name, const std::string &msg)
 {
-    time_t now = time(nullptr);
+    using clock = std::chrono::system_clock;
+    std::time_t currentTime = clock::to_time_t(clock::now());
 
     tm localTime{};
 #ifdef __linux__
-    localtime_r(&now, &localTime);
+    localtime_r(&currentTime , &localTime);
 #elif _WIN32
-    localtime_s(&localTime, &now);
+    localtime_s(&localTime, &currentTime);
 #endif
 
     std::stringstream resultString;
     resultString << "[" << name << "]"
-                 << "[" << 1900 + localTime.tm_year << "-" << localTime.tm_mon + 1 << "-" << localTime.tm_mday
-                 << " " << localTime.tm_hour << ":" << localTime.tm_min << ":" << localTime.tm_sec << "]: "
+                 << std::put_time(&localTime, "[%F %T]: ")
                  << msg << std::endl;
 
     Write(resultString.str());
