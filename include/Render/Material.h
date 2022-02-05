@@ -6,7 +6,8 @@
 #include <boost/type_index.hpp>
 #include "Render/ShaderTools.h"
 
-struct Material final : public IAsset {
+class Material final : public IAsset {
+public:
     std::string Shader;
     std::map<std::string, Shaders::ShaderParamValue> Uniforms;
     std::map<std::string, AssetsHandle> Samplers;
