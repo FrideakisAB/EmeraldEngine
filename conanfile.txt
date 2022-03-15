@@ -8,3 +8,6 @@ boost/1.76.0
 
 [generators]
 cmake
+
+[options]
+boost:without_fiber=True
