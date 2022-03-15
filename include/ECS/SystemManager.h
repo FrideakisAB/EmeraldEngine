@@ -1,6 +1,7 @@
 #ifndef SYSTEMMANAGER_H
 #define SYSTEMMANAGER_H
 
+#include <map>
 #include <vector>
 #include "ECS/API.h"
 #include <unordered_map>
@@ -22,6 +23,7 @@ namespace ECS {
         using SystemRegistry = std::unordered_map<u64, ISystem *>;
         using SystemAllocator = Memory::Allocator::LinearAllocator;
         using SystemWorkOrder = std::vector<ISystem *>;
+        using SystemGroups = std::multimap<SystemPriority, std::vector<SystemTypeId>, std::greater<>>;
 
     private:
         SystemAllocator *systemAllocator;
@@ -30,6 +32,10 @@ namespace ECS {
         SystemWorkOrder systemWorkOrder;
 
         void Update();
+
+        static void deepFirstSearch(SystemTypeId vertex, std::vector<int> &vertexState, const std::vector<std::vector<bool>> &edges, std::vector<SystemTypeId> &output);
+        void groupByDependency(std::vector<std::vector<SystemTypeId>> &vertexGroups, std::vector<SystemPriority> &groupsPriority);
+        SystemGroups sortGroupsByPriority(const std::vector<std::vector<SystemTypeId>> &vertexGroups, const std::vector<SystemPriority> &groupsPriority);
 
     public:
         SystemManager();

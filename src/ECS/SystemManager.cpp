@@ -58,35 +58,61 @@ namespace ECS {
 
     void SystemManager::UpdateSystemWorkOrder()
     {
-        const std::function<void(SystemTypeId, std::vector<int> &, const std::vector<std::vector<bool>> &, std::vector<SystemTypeId> &)> DFS = [&](SystemTypeId vertex,
-            std::vector<int> &VERTEX_STATE,
-            const std::vector<std::vector<bool>> &EDGES,
-            std::vector<SystemTypeId> &output) {
-            VERTEX_STATE[vertex] = 1;
+        std::vector<std::vector<SystemTypeId>> vertexGroups;
+        std::vector<SystemPriority> groupsPriority;
 
-            for (size_t i = 0; i < VERTEX_STATE.size(); ++i)
+        groupByDependency(vertexGroups, groupsPriority);
+
+        SystemGroups sortedGroups = std::move(sortGroupsByPriority(vertexGroups, groupsPriority));
+
+        systemWorkOrder.clear();
+        for (const auto &group : sortedGroups)
+        {
+            for (auto typeId : group.second)
             {
-                if (EDGES[i][vertex] && VERTEX_STATE[i] == 0)
-                    DFS(i, VERTEX_STATE, EDGES, output);
+                ISystem *system = systems[typeId];
+                if (system != nullptr)
+                    systemWorkOrder.push_back(system);
+            }
+        }
+    }
+
+    SystemManager::SystemGroups SystemManager::sortGroupsByPriority(const std::vector<std::vector<SystemTypeId>> &vertexGroups, const std::vector<SystemPriority> &groupsPriority)
+    {
+        SystemGroups sortedGroups;
+
+        std::vector<int> vertexStates(systemDependencyMatrix.size(), 0);
+
+        for (size_t i = 0; i < vertexGroups.size(); ++i)
+        {
+            std::vector<SystemTypeId> order;
+
+            for (u64 typeId : vertexGroups[i])
+            {
+                if (vertexStates[typeId] == 0)
+                    deepFirstSearch(typeId, vertexStates, systemDependencyMatrix, order);
             }
 
-            VERTEX_STATE[vertex] = 2;
-            output.push_back(vertex);
-        };
+            std::reverse(order.begin(), order.end());
 
-        const size_t NUM_SYSTEMS = systemDependencyMatrix.size();
+            sortedGroups.insert({groupsPriority[i], order});
+        }
 
-        std::vector<int> INDICES(NUM_SYSTEMS);
-        for (int i = 0; i < NUM_SYSTEMS; ++i)
-            INDICES[i] = i;
+        return sortedGroups;
+    }
 
-        std::vector<std::vector<SystemTypeId>> VERTEX_GROUPS;
-        std::vector<SystemPriority> GROUP_PRIORITY;
+    void SystemManager::groupByDependency(std::vector<std::vector<SystemTypeId>> &vertexGroups, std::vector<SystemPriority> &groupsPriority)
+    {
+        const size_t systemCount = systemDependencyMatrix.size();
 
-        while (!INDICES.empty())
+        std::vector<int> systemIndices(systemCount);
+        for (int i = 0; i < systemCount; ++i)
+            systemIndices[i] = i;
+
+        while (!systemIndices.empty())
         {
-            SystemTypeId index = INDICES.back();
-            INDICES.pop_back();
+            SystemTypeId index = systemIndices.back();
+            systemIndices.pop_back();
 
             if (index == -1)
                 continue;
@@ -102,12 +128,12 @@ namespace ECS {
                 index = member.back();
                 member.pop_back();
 
-                for (size_t i = 0; i < INDICES.size(); ++i)
+                for (size_t i = 0; i < systemIndices.size(); ++i)
                 {
-                    if (INDICES[i] != -1 && (systemDependencyMatrix[i][index] || systemDependencyMatrix[index][i]))
+                    if (systemIndices[i] != -1 && (systemDependencyMatrix[i][index] || systemDependencyMatrix[index][i]))
                     {
                         member.push_back(i);
-                        INDICES[i] = -1;
+                        systemIndices[i] = -1;
                     }
                 }
 
@@ -117,44 +143,22 @@ namespace ECS {
                 groupPriority = std::max((system != nullptr ? system->priority : NORMAL_SYSTEM_PRIORITY), groupPriority);
             }
 
-            VERTEX_GROUPS.push_back(group);
-            GROUP_PRIORITY.push_back(groupPriority);
+            vertexGroups.push_back(group);
+            groupsPriority.push_back(groupPriority);
         }
+    }
 
-        const size_t NUM_VERTEX_GROUPS = VERTEX_GROUPS.size();
+    void SystemManager::deepFirstSearch(SystemTypeId vertex, std::vector<int> &vertexState, const std::vector<std::vector<bool>> &edges, std::vector<SystemTypeId> &output)
+    {
+        vertexState[vertex] = 1;
 
-        std::vector<int> vertex_states(NUM_SYSTEMS, 0);
-
-        std::multimap<SystemPriority, std::vector<SystemTypeId>> VERTEX_GROUPS_SORTED;
-
-        for (size_t i = 0; i < NUM_VERTEX_GROUPS; ++i)
+        for (size_t i = 0; i < vertexState.size(); ++i)
         {
-            auto vertexGroup = VERTEX_GROUPS[i];
-
-            std::vector<SystemTypeId> order;
-
-            for (u64 typeId : vertexGroup)
-            {
-                if (vertex_states[typeId] == 0)
-                    DFS(typeId, vertex_states, systemDependencyMatrix, order);
-            }
-
-            std::reverse(order.begin(), order.end());
-
-            // note: MAX - PRIORITY will force the correct sorting behaviour in multimap (by default a multimap sorts int values from low to high)
-            VERTEX_GROUPS_SORTED.insert(std::pair<SystemPriority, std::vector<SystemTypeId>>(std::numeric_limits<SystemPriority>::max() - GROUP_PRIORITY[i], order));
+            if (edges[i][vertex] && vertexState[i] == 0)
+                deepFirstSearch(i, vertexState, edges, output);
         }
 
-        systemWorkOrder.clear();
-        for (const auto &group : VERTEX_GROUPS_SORTED)
-        {
-            for (auto typeId : group.second)
-            {
-                ISystem *system = systems[typeId];
-                if (system != nullptr)
-                    systemWorkOrder.push_back(system);
-            }
-        }
+        output.push_back(vertex);
     }
 
     SystemWorkStateMask SystemManager::GetSystemWorkState() const
