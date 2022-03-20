@@ -43,6 +43,10 @@ TEST_CASE( "System subsystem test", "[System]" )
         SM.GetSystem<TestSystem2>()->AddDependencies(system);
         SM.AddSystem<TestSystem3>();
 
+        system->AddDependencies(SM.GetSystem<TestSystem3>());
+
+        SM.UpdateSystemWorkOrder();
+
         REQUIRE( system != nullptr );
         REQUIRE( system == SM.AddSystem<TestSystem>() );
 
